@@ -70,4 +70,3 @@ public class Person {
 
 
 }
-// todo 2.11, 2.12
