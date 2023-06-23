@@ -7,14 +7,15 @@
 </head>
 <body>
 
-<p th:text="${person.getName()}">VALUE</p>
-<p th:text="${person.getId()}">VALUE</p>
-<p th:text="${person.getAge()}">VALUE</p>
-<p th:text="${person.getEmail()}">VALUE</p>
+<p th:text="'ID - ' + ${person.getId()}">VALUE</p>
+<p th:text="'Name - ' +  ${person.getName()}">VALUE</p>
+<p th:text="'Age - ' + ${person.getAge()}">VALUE</p>
+<p th:text="'Email - ' + ${person.getEmail()}">VALUE</p>
+<p th:text="'Address - ' + ${person.getAddress()}">VALUE</p>
 
 <br>
 
-<a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit ИЗМЕНИТЬ</a>
+<a th:href="@{/people/{id}/edit(id=${person.getId()})}">Edit</a>
 
 <br>
 <br>

@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Gadjikr
@@ -37,14 +38,19 @@ public class PersonDAO {
                 .stream().findAny().orElse(null);
     }
 
+    public Optional<Person> show(String email){
+        return jdbcTemplate.query("SELECT * FROM Person WHERE email=?", new Object[]{email}, new BeanPropertyRowMapper<>(Person.class))
+                .stream().findAny();
+    }
+
     public void save(Person person) {
-        jdbcTemplate.update("INSERT INTO Person(name, age, email) VALUES (?, ?, ?)",
-                person.getName(), person.getAge(), person.getEmail());
+        jdbcTemplate.update("INSERT INTO Person(name, age, email) VALUES (?, ?, ?, ?)",
+                person.getName(), person.getAge(), person.getEmail(), person.getAddress());
     }
 
     public void update(int id, Person updatedPerson) {
-        jdbcTemplate.update("UPDATE Person SET name=?, age=?, email=? WHERE id=?",
-                updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id);
+        jdbcTemplate.update("UPDATE Person SET name=?, age=?, email=?, address=? WHERE id=?",
+                updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), updatedPerson.getAddress(), id);
     }
 
     public void delete(int id) {
@@ -76,13 +82,14 @@ public class PersonDAO {
 
         long before = System.currentTimeMillis();
 
-        jdbcTemplate.batchUpdate("INSERT INTO Person VALUES (?,?,?,?)", new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate("INSERT INTO Person VALUES (?,?,?,?,?)", new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
                 preparedStatement.setInt(1, people.get(i).getId());
                 preparedStatement.setString(2, people.get(i).getName());
                 preparedStatement.setInt(3, people.get(i).getAge());
                 preparedStatement.setString(4, people.get(i).getEmail());
+                preparedStatement.setString(5, people.get(i).getAddress());
             }
 
             @Override
@@ -95,10 +102,10 @@ public class PersonDAO {
     }
 
     private List<Person> create1000People() {
-        List<Person> people = new ArrayList<Person>();
+        List<Person> people = new ArrayList<>();
 
         for (int i = 0; i < 1000; i++) {
-            people.add(new Person(i, "Person" + i, 25, "mail" + i + "@gmail.con"));
+            people.add(new Person(i, "Person" + i, 25, "mail" + i + "@gmail.con", "address"));
         }
 
         return people;
